@@ -1,0 +1,45 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# Set page title
+st.title('NBA Scoring Dashboard')
+
+# Load and prepare data (replace with your actual data source)
+@st.cache_data
+def load_data():
+    # Sample data - replace with your actual data loading logic
+    data = pd.DataFrame({
+        'Player': ['Player 1', 'Player 2', 'Player 3'],
+        'Points': [25, 30, 20],
+        'Team': ['Team A', 'Team B', 'Team C']
+    })
+    return data
+
+data = load_data()
+
+# Create sidebar filters
+st.sidebar.header('Filters')
+selected_team = st.sidebar.multiselect(
+    'Select Team',
+    options=data['Team'].unique(),
+    default=data['Team'].unique()
+)
+
+# Filter data based on selection
+filtered_data = data[data['Team'].isin(selected_team)]
+
+# Create visualizations
+st.header('Scoring Statistics')
+
+# Bar chart of points by player
+fig = px.bar(filtered_data, 
+             x='Player', 
+             y='Points',
+             color='Team',
+             title='Points per Player')
+st.plotly_chart(fig)
+
+# Display raw data
+st.header('Raw Data')
+st.dataframe(filtered_data)
